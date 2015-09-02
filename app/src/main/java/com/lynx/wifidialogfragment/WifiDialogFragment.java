@@ -80,7 +80,7 @@ public class WifiDialogFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ssid = ((TextView) view.findViewById(R.id.tvName_R)).getText().toString();
                 String type = ((TextView) view.findViewById(R.id.tvType_R)).getText().toString();
-                if(type.equals("OPEN")) {
+                if(type.equals("Open")) {
                     WifiConfiguration conf = new WifiConfiguration();
                     conf.SSID = "\"" + ssid + "\"";
                     conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);

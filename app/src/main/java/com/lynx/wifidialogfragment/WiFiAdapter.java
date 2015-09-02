@@ -59,11 +59,11 @@ public class WiFiAdapter extends ArrayAdapter<ScanResult> {
     private String getConnType(ScanResult _sc) {
         String capabilities = _sc.capabilities;
         if (capabilities.toUpperCase().contains("WEP")) {
-            return "WEP";
+            return "Secured";
         } else if (capabilities.toUpperCase().contains("WPA") || capabilities.toUpperCase().contains("WPA2")) {
-            return "WPA/WPA2";
+            return "Secured";
         } else {
-            return "OPEN";
+            return "Open";
         }
     }
 
