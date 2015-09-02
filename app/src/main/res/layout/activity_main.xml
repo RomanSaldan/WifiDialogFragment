@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnShowDialogFragment_AM"
+        android:text="Show fragment"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show dialog"
+        android:id="@+id/btnShowDialog_AM"
+        android:layout_below="@+id/btnShowDialogFragment_AM"
+        android:layout_alignLeft="@+id/btnShowDialogFragment_AM"
+        android:layout_alignStart="@+id/btnShowDialogFragment_AM"
+        android:layout_alignRight="@+id/btnShowDialogFragment_AM"
+        android:layout_alignEnd="@+id/btnShowDialogFragment_AM"/>
+
+</RelativeLayout>
