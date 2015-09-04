@@ -39,6 +39,7 @@
         android:layout_height="20dp"
         android:id="@+id/pbStatus_WF"
         android:indeterminate="true"
+        android:visibility="invisible"
         android:layout_below="@+id/textView3"
         android:layout_alignLeft="@+id/textView3"
         android:layout_alignStart="@+id/textView3"/>

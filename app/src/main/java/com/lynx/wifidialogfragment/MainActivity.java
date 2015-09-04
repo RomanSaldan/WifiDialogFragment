@@ -4,6 +4,7 @@ import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.os.Build;
+import android.preference.PreferenceActivity;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,10 +55,10 @@ public class MainActivity extends ActivityGroup implements View.OnClickListener 
                 break;
             case R.id.btnShowDialog_AM:     // display system Wi-Fi settings activity
 
-//                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-//                i.putExtra(":android:show_fragment", "com.android.settings.wifi.WifiSettings");
-//                i.putExtra(":android:no_headers", true);
-//                startActivity(i);
+                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                i.putExtra(":android:show_fragment", "com.android.settings.wifi.WifiSettings");
+                i.putExtra(":android:no_headers", true);
+                startActivity(i);
 
 
                 break;
