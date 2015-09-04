@@ -8,20 +8,19 @@
         android:layout_height="wrap_content"
         android:text="WI-FI"
         android:id="@+id/textView"
-        android:layout_alignParentTop="true"
+        android:textSize="25sp"
+        android:layout_below="@+id/ibClose_WDF"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textSize="25sp"/>
+        android:layout_alignParentStart="true"/>
 
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/swWifi_WDF"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:checked="false"
-        android:layout_alignBottom="@+id/textView"/>
+        android:layout_below="@+id/ibClose_WDF"
+        android:layout_alignRight="@+id/ibClose_WDF"
+        android:layout_alignEnd="@+id/ibClose_WDF"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -30,5 +29,13 @@
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibClose_WDF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

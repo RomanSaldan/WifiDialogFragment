@@ -3,13 +3,11 @@ package com.lynx.wifidialogfragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
@@ -21,11 +19,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +35,7 @@ import java.util.List;
 /**
  * Created by WORK on 01.09.2015.
  */
-public class WifiDialogFragment extends DialogFragment {
+public class WifiDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private Context             mCtx;
     private WifiManager         mWifi;
@@ -45,6 +44,7 @@ public class WifiDialogFragment extends DialogFragment {
     private List<ScanResult>    results;
     private WiFiAdapter         mWifiAdapter;
     private MyWifiReceiver      mReceiver;
+    private ImageButton         ibClose_WDF;
 
     @Override
     public void onAttach(Activity activity) {
@@ -55,9 +55,9 @@ public class WifiDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWifiAdapter = new WiFiAdapter(mCtx, new ArrayList<ScanResult>());
-        mWifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
-        mReceiver = new MyWifiReceiver();
+        mWifiAdapter    = new WiFiAdapter(mCtx, new ArrayList<ScanResult>());
+        mWifi           = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
+        mReceiver       = new MyWifiReceiver();
     }
 
     @Nullable
@@ -65,9 +65,13 @@ public class WifiDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View dialogView = inflater.inflate(R.layout.wifi_dialog_fragment, container, false);
         /*Init views*/
+        ibClose_WDF = (ImageButton) dialogView.findViewById(R.id.ibClose_WDF);
+        ibClose_WDF.setImageDrawable(getResources().getDrawable(R.drawable.button_close));
+        ibClose_WDF.setOnClickListener(this);
         lvWifi_WDF = (ListView) dialogView.findViewById(R.id.lvWifi_WDF);
         lvWifi_WDF.setAdapter(mWifiAdapter);
         swWifi_WDF = (Switch) dialogView.findViewById(R.id.swWifi_WDF);
+        swWifi_WDF.setChecked(false);
         swWifi_WDF.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -80,7 +84,7 @@ public class WifiDialogFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String ssid = ((TextView) view.findViewById(R.id.tvName_R)).getText().toString();
                 String type = ((TextView) view.findViewById(R.id.tvType_R)).getText().toString();
-                if(type.equals("Open")) {
+                if (type.equals("Open")) {
                     WifiConfiguration conf = new WifiConfiguration();
                     conf.SSID = "\"" + ssid + "\"";
                     conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
@@ -90,6 +94,8 @@ public class WifiDialogFragment extends DialogFragment {
                 } else showPassDialog(mCtx, ssid);
             }
         });
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        setCancelable(false);
         return dialogView;
     }
 
@@ -98,7 +104,8 @@ public class WifiDialogFragment extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         if(mWifi.isWifiEnabled()) {
             onWifi();
-        } else offWifi();
+        }
+//        else offWifi();
     }
 
     /*Turn on wifi*/
@@ -108,6 +115,7 @@ public class WifiDialogFragment extends DialogFragment {
         swWifi_WDF.setText("ON");
         IntentFilter iFilter = new IntentFilter();
         iFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        iFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION); // HERE
         mCtx.registerReceiver(mReceiver, iFilter);
         mWifi.startScan();
     }
@@ -121,6 +129,15 @@ public class WifiDialogFragment extends DialogFragment {
         mWifiAdapter.update(new ArrayList<ScanResult>());
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ibClose_WDF:
+                getFragmentManager().beginTransaction().remove(this).commit();
+                break;
+        }
+    }
+
     /*Custom broadcast receiver for handle new wifi connections*/
     public class MyWifiReceiver extends BroadcastReceiver {
         @Override
@@ -130,6 +147,47 @@ public class WifiDialogFragment extends DialogFragment {
                     results = mWifi.getScanResults();
                     mWifiAdapter.update(new ArrayList<ScanResult>(results));
                     break;
+                /*AND HERE /////////////////////////////////////////*/
+                case WifiManager.SUPPLICANT_STATE_CHANGED_ACTION:
+                    Log.d("myLogs", "Wifi state changed");
+                    SupplicantState supl_state=((SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE));
+                    switch(supl_state){
+                        case ASSOCIATED:Log.i("myLogs", "ASSOCIATED");
+                            break;
+                        case ASSOCIATING:Log.i("myLogs", "ASSOCIATING");
+                            break;
+                        case AUTHENTICATING:Log.i("myLogs", "Authenticating...");
+                            break;
+                        case COMPLETED:Log.i("myLogs", "Connected");
+                            break;
+                        case DISCONNECTED:Log.i("myLogs", "Disconnected");
+                            break;
+                        case DORMANT:Log.i("myLogs", "DORMANT");
+                            break;
+                        case FOUR_WAY_HANDSHAKE:Log.i("myLogs", "FOUR_WAY_HANDSHAKE");
+                            break;
+                        case GROUP_HANDSHAKE:Log.i("myLogs", "GROUP_HANDSHAKE");
+                            break;
+                        case INACTIVE:Log.i("myLogs", "INACTIVE");
+                            break;
+                        case INTERFACE_DISABLED:Log.i("myLogs", "INTERFACE_DISABLED");
+                            break;
+                        case INVALID:Log.i("myLogs", "INVALID");
+                            break;
+                        case SCANNING:Log.i("myLogs", "SCANNING");
+                            break;
+                        case UNINITIALIZED:Log.i("myLogs", "UNINITIALIZED");
+                            break;
+                        default:Log.i("myLogs", "Unknown");
+                            break;
+
+                    }
+                    int supl_error=intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, -1);
+                    if(supl_error==WifiManager.ERROR_AUTHENTICATING){
+                        Log.i("myLogs", "ERROR_AUTHENTICATING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                    break;
+                /*//////////////////////////////////////////////////////////////*/
             }
         }
     }

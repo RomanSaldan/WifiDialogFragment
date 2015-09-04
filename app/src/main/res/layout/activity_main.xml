@@ -13,18 +13,45 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnShowDialogFragment_AM"
         android:text="Show fragment"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show dialog"
+        android:text="System dialog"
         android:id="@+id/btnShowDialog_AM"
-        android:layout_below="@+id/btnShowDialogFragment_AM"
-        android:layout_alignLeft="@+id/btnShowDialogFragment_AM"
-        android:layout_alignStart="@+id/btnShowDialogFragment_AM"
-        android:layout_alignRight="@+id/btnShowDialogFragment_AM"
-        android:layout_alignEnd="@+id/btnShowDialogFragment_AM"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hide NavBar"
+        android:id="@+id/btnHideNavBar_AM"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show NavBar"
+        android:id="@+id/btnShowNavBar_AM"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/btnHideNavBar_AM"
+        android:layout_toEndOf="@+id/btnHideNavBar_AM"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New fragment"
+        android:id="@+id/btnNewFragment_AM"
+        android:layout_above="@+id/btnShowDialogFragment_AM"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
 
 </RelativeLayout>
