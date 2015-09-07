@@ -26,4 +26,11 @@
         android:ems="10"
         android:hint="Enter network password"
         android:id="@+id/etPass_PD"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save password?"
+        android:id="@+id/cbSavePassword_PD"
+        android:checked="false"/>
 </LinearLayout>

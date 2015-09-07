@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,20 +39,22 @@ import java.util.List;
 /**
  * Created by WORK on 03.09.2015.
  */
-public class WifiFragment extends DialogFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, AdapterView.OnItemClickListener, DialogInterface.OnClickListener {
+public class WifiFragment extends DialogFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, AdapterView.OnItemClickListener, DialogInterface.OnClickListener, AdapterView.OnItemLongClickListener {
 
-    private Context             mCtx;
+    private Context                     mCtx;
 
-    private Switch              swWifi_WF;
-    private ImageButton         ibExit_WF;
-    private ProgressBar         pbStatus_WF;
-    private TextView            tvStatus_WF;
-    private ListView            lvNetworks_WF;
+    private Switch                      swWifi_WF;
+    private ImageButton                 ibExit_WF;
+    private ProgressBar                 pbStatus_WF;
+    private TextView                    tvStatus_WF;
+    private ListView                    lvNetworks_WF;
 
-    private WifiManager         mWifiManager;
-    private WifiListAdapter     mWifiListAdapter;
-    private List<ScanResult>    mNetworkList;
-    private WifiReceiver        mWifiReceiver;
+    private WifiManager                 mWifiManager;
+    private WifiListAdapter             mWifiListAdapter;
+    private List<ScanResult>            mNetworkList;
+    private WifiReceiver                mWifiReceiver;
+    private SharedPreferences           mSharedPreferences;
+    private SharedPreferences.Editor    editor;
 
     @Override
     public void onAttach(Activity activity) {
@@ -64,6 +68,8 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
         mWifiListAdapter    = new WifiListAdapter(mCtx);
         mWifiManager        = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
         mWifiReceiver       = new WifiReceiver();
+        mSharedPreferences  = mCtx.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        editor              = mSharedPreferences.edit();
     }
 
     @Nullable
@@ -71,7 +77,7 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View dialogView = inflater.inflate(R.layout.wifi_fragment, container, false);
         initUI(dialogView);
-        lvNetworks_WF.setAdapter(mWifiListAdapter);
+//        lvNetworks_WF.setAdapter(mWifiListAdapter);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
         return dialogView;
@@ -104,10 +110,35 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
         String ssid = ((TextView) view.findViewById(R.id.tvNetworkName_WLI)).getText().toString();
         Drawable lock = ((ImageView) view.findViewById(R.id.ivLock_WLI)).getDrawable();
         if(lock.getConstantState().equals(mCtx.getResources().getDrawable(R.drawable.wf_lock).getConstantState())) {
-            displayPassDialog(ssid);
+            if(mSharedPreferences.contains(ssid)) {
+                String pass = mSharedPreferences.getString(ssid, "");
+                connectToLockedNetwork(ssid, pass);
+            } else
+                displayPassDialog(ssid);
         } else {
             connectToOpenNetwork(ssid);
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        final String ssid = ((TextView) view.findViewById(R.id.tvNetworkName_WLI)).getText().toString();
+        AlertDialog.Builder adb = new AlertDialog.Builder(mCtx)
+                .setMessage("Forget network " + ssid + "?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if(mSharedPreferences.contains(ssid)) mSharedPreferences.edit().remove(ssid).commit();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+        adb.create().show();
+        return true;
     }
 
     @Override
@@ -122,18 +153,24 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
                     Toast.makeText(mCtx, "Password required 8 symbols or more", Toast.LENGTH_SHORT).show();
                     break;
                 }
+                CheckBox cb = ((CheckBox) ((Dialog)dialogInterface).findViewById(R.id.cbSavePassword_PD));
+                if(cb.isChecked()) savePassword(ssid, pass);   // here save pass to SP
                 connectToLockedNetwork(ssid, pass);
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 dialogInterface.dismiss();
                 break;
         }
-
     }
 
     /*-------------------------------------------------------*/
     /* ---------------- Utility methods -------------------- */
     /*-------------------------------------------------------*/
+
+    /*Save network password to shared preferences*/
+    private void savePassword(String _ssid, String _pass) {
+        editor.putString(_ssid, _pass);
+    }
 
     private void initUI(View dialogView) {
         swWifi_WF       = (Switch) dialogView.findViewById(R.id.swWifi_WF);
@@ -147,7 +184,9 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
         ibExit_WF           .setImageDrawable(getResources().getDrawable(R.drawable.button_exit));
         ibExit_WF           .setOnClickListener(this);
         pbStatus_WF         .setIndeterminate(true);
+        lvNetworks_WF       .setAdapter(mWifiListAdapter);
         lvNetworks_WF       .setOnItemClickListener(this);
+        lvNetworks_WF       .setOnItemLongClickListener(this);
     }
 
     private void onWiFi() {
@@ -234,6 +273,7 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
                             tvStatus_WF.setVisibility(View.INVISIBLE);
                             tvStatus_WF.setText("Connected");
                             pbStatus_WF.setVisibility(View.INVISIBLE);
+                            editor.commit();
                             mWifiListAdapter.notifyDataSetChanged();
                             break;
                     }
@@ -242,6 +282,7 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
                         pbStatus_WF.setVisibility(View.INVISIBLE);
                         tvStatus_WF.setVisibility(View.VISIBLE);
                         tvStatus_WF.setText("Wrong password");
+                        editor.clear().commit();
                         mWifiListAdapter.notifyDataSetChanged();
                     }
                     break;
