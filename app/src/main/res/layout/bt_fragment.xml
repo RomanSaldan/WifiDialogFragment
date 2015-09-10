@@ -25,39 +25,57 @@
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView"/>
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbSearch_BLI"
+        android:indeterminate="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView"
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Status"
         android:id="@+id/tvStatus_BF"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_below="@+id/textView"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Visible"
-        android:id="@+id/btnVisible_BF"
+        android:text="Scan"
+        android:id="@+id/btnScan_BF"
         android:layout_below="@+id/tvStatus_BF"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lvDevices_BF"
-        android:layout_below="@+id/btnVisible_BF"
-        android:layout_alignLeft="@+id/btnVisible_BF"
-        android:layout_alignStart="@+id/btnVisible_BF"/>
+        android:layout_below="@+id/btnScan_BF"
+        android:layout_alignRight="@+id/pbSearch_BLI"
+        android:layout_alignEnd="@+id/pbSearch_BLI"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ibExit_BF"
-        android:layout_alignBottom="@+id/swBT_BF"
-        android:layout_alignRight="@+id/btnVisible_BF"
-        android:layout_alignEnd="@+id/btnVisible_BF"/>
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignRight="@+id/pbSearch_BLI"
+        android:layout_alignEnd="@+id/pbSearch_BLI"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invisible"
+        android:id="@+id/cbVisibility_BF"
+        android:layout_above="@+id/lvDevices_BF"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:checked="false"/>
+
 </RelativeLayout>
