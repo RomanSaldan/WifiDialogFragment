@@ -77,7 +77,6 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View dialogView = inflater.inflate(R.layout.wifi_fragment, container, false);
         initUI(dialogView);
-//        lvNetworks_WF.setAdapter(mWifiListAdapter);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setCancelable(false);
         return dialogView;
@@ -107,8 +106,8 @@ public class WifiFragment extends DialogFragment implements CompoundButton.OnChe
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         // get SSID & Type of network and connect if network require password
-        String ssid = ((TextView) view.findViewById(R.id.tvNetworkName_WLI)).getText().toString();
-        Drawable lock = ((ImageView) view.findViewById(R.id.ivLock_WLI)).getDrawable();
+        String      ssid    = ((TextView) view.findViewById(R.id.tvNetworkName_WLI)).getText().toString();
+        Drawable    lock    = ((ImageView) view.findViewById(R.id.ivLock_WLI)).getDrawable();
         if(lock.getConstantState().equals(mCtx.getResources().getDrawable(R.drawable.wf_lock).getConstantState())) {
             if(mSharedPreferences.contains(ssid)) {
                 String pass = mSharedPreferences.getString(ssid, "");

@@ -1,33 +1,22 @@
 package com.lynx.wifidialogfragment;
 
-import android.app.ActivityGroup;
-import android.app.LocalActivityManager;
-import android.content.ComponentName;
+import android.app.Activity;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.preference.PreferenceActivity;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
-
-import java.lang.reflect.Method;
 
 
-public class MainActivity extends ActivityGroup implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
-    Button btnShowDialogFragment_AM;
     Button btnShowDialog_AM;
     Button btnHideNavBar_AM;
     Button btnShowNavBar_AM;
-    Button btnNewFragment_AM;
+    Button btnFragmentWifi_AM;
+    Button btnFragmentBT_AM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +24,8 @@ public class MainActivity extends ActivityGroup implements View.OnClickListener 
         setContentView(R.layout.activity_main);
 
         /* ============ Init UI ============= */
-        btnShowDialogFragment_AM = (Button) findViewById(R.id.btnShowDialogFragment_AM);
-        btnShowDialogFragment_AM.setOnClickListener(this);
 
-        btnShowDialog_AM = (Button) findViewById(R.id.btnShowDialog_AM);
+        btnShowDialog_AM = (Button) findViewById(R.id.btnSystemWifi_AM);
         btnShowDialog_AM.setOnClickListener(this);
 
         btnHideNavBar_AM = (Button) findViewById(R.id.btnHideNavBar_AM);
@@ -47,37 +34,42 @@ public class MainActivity extends ActivityGroup implements View.OnClickListener 
         btnShowNavBar_AM = (Button) findViewById(R.id.btnShowNavBar_AM);
         btnShowNavBar_AM.setOnClickListener(this);
 
-        btnNewFragment_AM = (Button) findViewById(R.id.btnNewFragment_AM);
-        btnNewFragment_AM.setOnClickListener(this);
+        btnFragmentWifi_AM = (Button) findViewById(R.id.btnFragmentWifi_AM);
+        btnFragmentWifi_AM.setOnClickListener(this);
+
+        btnFragmentBT_AM = (Button) findViewById(R.id.btnFragmentBT_AM);
+        btnFragmentBT_AM.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId())  {
-            case R.id.btnShowDialogFragment_AM:     // display custom Wi-Fi fragment
-                WifiDialogFragment wifiFragment = new WifiDialogFragment();
-                getFragmentManager().beginTransaction().add(wifiFragment, "tag").commit();
+            case R.id.btnFragmentWifi_AM:    // show wifi fragment
+                getFragmentManager().beginTransaction().add(new WifiFragment(), "wf").commit();
                 break;
-            case R.id.btnShowDialog_AM:     // display system Wi-Fi settings activity
+            case R.id.btnFragmentBT_AM:
+                getFragmentManager().beginTransaction().add(new BTFragment(), "bt").commit();
+                break;
+            case R.id.btnSystemWifi_AM:     // display system Wi-Fi settings activity
 
-//                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+//                Intent i = new Intent(Settings.ACTION_SETTINGS);
 //                i.putExtra(":android:show_fragment", "com.android.settings.wifi.WifiSettings");
 //                i.putExtra(":android:no_headers", true);
+//                i.putExtra("wifi_show_custom_button", true);
+//                i.putExtra("extra_prefs_show_button_bar", true);
+//                i.putExtra("extra_prefs_set_next_text", "");
 //                startActivity(i);
 
-//                Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
-//                intent.putExtra("only_access_points", true);
-//                intent.putExtra("extra_prefs_show_button_bar", true);
-//                intent.putExtra("wifi_enable_next_on_connect", true);
-//                startActivityForResult(intent, 1);
 
-                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                Intent i = new Intent(Settings.ACTION_WIFI_SETTINGS);
                 i.putExtra(":android:show_fragment", "com.android.settings.wifi.WifiSettings");
                 i.putExtra(":android:no_headers", true);
+                i.putExtra("wifi_show_action_bar", false);
                 i.putExtra("extra_prefs_show_button_bar", true);
-                i.putExtra("extra_prefs_set_next_text", "");
-                startActivity(i);
+                startActivityForResult(i, 1);
+
+//                startLockTask(); // REQUIRES API 21+ :(
 
                 break;
             case R.id.btnHideNavBar_AM:     // hide navigation bar
@@ -85,9 +77,6 @@ public class MainActivity extends ActivityGroup implements View.OnClickListener 
                 break;
             case R.id.btnShowNavBar_AM:     // show navigation bar
                 showNavBar();
-                break;
-            case R.id.btnNewFragment_AM:    // show new fragment
-                getFragmentManager().beginTransaction().add(new WifiFragment(), "tag2").commit();
                 break;
         }
     }

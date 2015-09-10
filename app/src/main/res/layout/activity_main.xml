@@ -12,17 +12,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnShowDialogFragment_AM"
-        android:text="Show fragment"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="System dialog"
-        android:id="@+id/btnShowDialog_AM"
+        android:text="System Wifi"
+        android:id="@+id/btnSystemWifi_AM"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
@@ -48,9 +39,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New fragment"
-        android:id="@+id/btnNewFragment_AM"
-        android:layout_above="@+id/btnShowDialogFragment_AM"
+        android:text="Fragment Wifi"
+        android:id="@+id/btnFragmentWifi_AM"
+        android:layout_alignTop="@+id/btnSystemWifi_AM"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fragment BT"
+        android:id="@+id/btnFragmentBT_AM"
+        android:layout_above="@+id/btnFragmentWifi_AM"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
