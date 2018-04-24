@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.mishon",
+    "sha256_cert_fingerprints":
+    ["E8:10:42:FF:6A:B3:5C:42:B2:43:09:2C:F5:FC:EE:EF:62:2E:54:74:8F:68:F1:7F:70:BA:FB:A0:E6:F0:D6:5C"]
+  }
+}]
